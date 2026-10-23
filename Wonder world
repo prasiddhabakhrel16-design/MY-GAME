@@ -1,0 +1,1230 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WonderLab — Explore the Weird</title>
+
+<style>
+:root {
+  --bg: #f6f5f1;
+  --card: #ffffff;
+  --ink: #202020;
+  --muted: #737373;
+  --line: #e6e4df;
+  --accent: #7357ff;
+  --soft: #eeeaff;
+  --shadow: 0 8px 30px #2020200b;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Arial, Helvetica, sans-serif;
+  transition: background .25s, color .25s;
+}
+body.dark {
+  --bg: #17171d;
+  --card: #24242d;
+  --ink: #f4f2ff;
+  --muted: #b1afbd;
+  --line: #393945;
+  --soft: #37304f;
+  --shadow: 0 8px 30px #0003;
+}
+button, input, textarea, select { font: inherit; }
+button { cursor: pointer; }
+button:focus-visible, input:focus-visible,
+textarea:focus-visible, a:focus-visible {
+  outline: 3px solid #a99aff;
+  outline-offset: 3px;
+}
+a { color: inherit; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+  padding: 13px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.logo { font-size: 21px; font-weight: 900; letter-spacing: -1px; }
+.logo span { color: var(--accent); }
+.nav { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.nav a, .nav button {
+  text-decoration: none;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  padding: 8px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+.nav a:hover, .nav button:hover { background: var(--soft); }
+.wrap { width: min(1080px, 91%); margin: auto; }
+.hero {
+  padding: 65px 0 42px;
+  text-align: center;
+}
+.eyebrow {
+  display: inline-block;
+  background: var(--soft);
+  color: var(--accent);
+  border-radius: 50px;
+  padding: 8px 13px;
+  font-weight: bold;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.hero h1 {
+  font-size: clamp(44px, 9vw, 86px);
+  letter-spacing: -5px;
+  line-height: .98;
+  margin: 22px 0 18px;
+}
+.gradient {
+  background: linear-gradient(100deg, #7657ff, #ff6398, #ffad52);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero p {
+  max-width: 550px;
+  margin: auto;
+  color: var(--muted);
+  line-height: 1.7;
+  font-size: 17px;
+}
+.search {
+  display: block;
+  width: min(480px, 100%);
+  margin: 27px auto 0;
+  padding: 15px 18px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  border-radius: 15px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 30px 0 40px;
+}
+.stat {
+  text-align: center;
+  padding: 20px 8px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+}
+.stat strong { display: block; font-size: 26px; }
+.stat span { font-size: 12px; color: var(--muted); }
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 10px;
+  margin: 42px 0 18px;
+}
+.section-heading h2 { margin: 0; font-size: 28px; letter-spacing: -1px; }
+.section-heading p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
+.pill {
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--ink);
+  padding: 8px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+}
+.pill.active { background: var(--ink); color: var(--bg); }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 21px;
+  box-shadow: var(--shadow);
+  min-width: 0;
+}
+.experiment {
+  text-align: left;
+  color: var(--ink);
+  width: 100%;
+  min-height: 190px;
+  transition: transform .18s, border-color .18s;
+}
+.experiment:hover { transform: translateY(-4px); border-color: #a99aff; }
+.emoji { font-size: 34px; display: block; margin-bottom: 17px; }
+.experiment h3 { font-size: 18px; margin: 0 0 8px; }
+.experiment p { color: var(--muted); font-size: 13px; line-height: 1.55; margin: 0; }
+.tag {
+  display: inline-block;
+  margin-top: 14px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+.panel { margin-top: 30px; scroll-margin-top: 90px; }
+.panel h2 { letter-spacing: -1px; }
+.panel p { color: var(--muted); line-height: 1.6; }
+.tool { padding: 26px; }
+.big-number { font-size: clamp(32px, 7vw, 58px); font-weight: 900; letter-spacing: -2px; }
+.muted { color: var(--muted); font-size: 13px; }
+.btn {
+  background: var(--ink);
+  color: var(--bg);
+  border: 0;
+  border-radius: 12px;
+  padding: 12px 17px;
+  font-weight: bold;
+  margin: 4px 3px 4px 0;
+}
+.btn.primary { background: var(--accent); color: white; }
+.btn.light { background: var(--soft); color: var(--ink); }
+.field {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  padding: 13px;
+  border-radius: 12px;
+  margin: 6px 0 12px;
+}
+textarea.field { min-height: 100px; resize: vertical; }
+.rowline { display: flex; gap: 9px; align-items: center; flex-wrap: wrap; }
+.rowline .field { flex: 1; min-width: 100px; }
+.result {
+  margin-top: 14px;
+  padding: 14px;
+  border-radius: 13px;
+  background: var(--soft);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.meter {
+  height: 14px;
+  background: var(--line);
+  border-radius: 20px;
+  overflow: hidden;
+  margin: 14px 0;
+}
+.meter div {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #7657ff, #ff6398);
+  transition: width .2s;
+}
+.color-box {
+  height: 130px;
+  border-radius: 16px;
+  background: #7357ff;
+  margin: 15px 0;
+  border: 1px solid var(--line);
+}
+.planet {
+  display: inline-grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  font-size: 32px;
+  background: var(--soft);
+  margin: 4px;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+.planet.selected { border-color: var(--accent); }
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.shop-item {
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  border-radius: 14px;
+  padding: 14px;
+  text-align: left;
+}
+.shop-item strong { display: block; margin: 7px 0; }
+.shop-item small { color: var(--muted); }
+.task {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.task span { flex: 1; }
+.task.done span { text-decoration: line-through; color: var(--muted); }
+.task button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  padding: 8px;
+}
+footer {
+  text-align: center;
+  color: var(--muted);
+  padding: 60px 10px 35px;
+  font-size: 13px;
+}
+.hidden { display: none !important; }
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--ink);
+  color: var(--bg);
+  padding: 13px 18px;
+  border-radius: 12px;
+  z-index: 20;
+  box-shadow: var(--shadow);
+  max-width: 90%;
+  text-align: center;
+}
+@media (max-width: 750px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hero { padding-top: 45px; }
+  .hero h1 { letter-spacing: -3px; }
+  .nav a { display: none; }
+}
+@media (max-width: 430px) {
+  .grid { grid-template-columns: 1fr; }
+  .experiment { min-height: 0; }
+  .stats { gap: 7px; }
+  .stat strong { font-size: 22px; }
+  .card { padding: 18px; }
+  .tool { padding: 20px; }
+}
+</style>
+</head>
+
+<body>
+<header class="topbar">
+  <div class="logo">wonder<span>lab</span> ✳</div>
+  <nav class="nav">
+    <a href="#explore">Explore</a>
+    <a href="#play">Play</a>
+    <a href="#create">Create</a>
+    <button onclick="toggleDark()" id="themeBtn">🌙 Theme</button>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <span class="eyebrow">THE INTERNET PLAYGROUND ✨</span>
+    <h1>Curiosity<br>looks good <span class="gradient">on you.</span></h1>
+    <p>A collection of tiny experiments, ridiculous games, curious facts, and things you didn't know you needed to click.</p>
+    <input class="search" id="search" placeholder="🔎 Find something interesting..." oninput="filterCards()">
+  </section>
+
+  <div class="stats">
+    <div class="stat"><strong id="visitCount">0</strong><span>Experiments available</span></div>
+    <div class="stat"><strong id="clickCount">0</strong><span>Things you've clicked</span></div>
+    <div class="stat"><strong>∞</strong><span>Ways to get distracted</span></div>
+  </div>
+
+  <section id="explore">
+    <div class="section-heading">
+      <div>
+        <h2>Pick your rabbit hole.</h2>
+        <p>One little click can lead anywhere.</p>
+      </div>
+    </div>
+    <div class="rowline" style="margin-bottom:16px">
+      <button class="pill active" onclick="setCategory('all',this)">Everything</button>
+      <button class="pill" onclick="setCategory('play',this)">🎮 Games</button>
+      <button class="pill" onclick="setCategory('learn',this)">🧠 Learn</button>
+      <button class="pill" onclick="setCategory('create',this)">🎨 Create</button>
+    </div>
+
+    <div class="grid" id="experimentGrid">
+      <button class="card experiment" data-category="learn" onclick="openTool('universe')">
+        <span class="emoji">🪐</span><h3>Little Universe</h3>
+        <p>Visit strange worlds and learn a few space facts.</p><span class="tag">Explore space ↗</span>
+      </button>
+      <button class="card experiment" data-category="play" onclick="openTool('money')">
+        <span class="emoji">💸</span><h3>Spend a Fortune</h3>
+        <p>Can you spend your pretend fortune without going broke?</p><span class="tag">Shopping simulator ↗</span>
+      </button>
+      <button class="card experiment" data-category="learn" onclick="openTool('earth')">
+        <span class="emoji">🌍</span><h3>Planet Earth</h3>
+        <p>Explore some fascinating facts about our home.</p><span class="tag">Our world ↗</span>
+      </button>
+      <button class="card experiment" data-category="create" onclick="openTool('colors')">
+        <span class="emoji">🎨</span><h3>Color Lab</h3>
+        <p>Mix RGB colors and create your own digital shade.</p><span class="tag">Make a color ↗</span>
+      </button>
+      <button class="card experiment" data-category="learn" onclick="openTool('facts')">
+        <span class="emoji">🤯</span><h3>Fact Machine</h3>
+        <p>Press a button and discover something surprising.</p><span class="tag">Random knowledge ↗</span>
+      </button>
+      <button class="card experiment" data-category="play" onclick="openTool('reaction')">
+        <span class="emoji">⚡</span><h3>Reaction Test</h3>
+        <p>Test how quickly you can react to a signal.</p><span class="tag">Ready, set, tap ↗</span>
+      </button>
+      <button class="card experiment" data-category="play" onclick="openTool('guess')">
+        <span class="emoji">🔢</span><h3>Guess the Number</h3>
+        <p>A secret number is hiding between 1 and 100.</p><span class="tag">Can you find it? ↗</span>
+      </button>
+      <button class="card experiment" data-category="create" onclick="openTool('story')">
+        <span class="emoji">✍️</span><h3>Story Machine</h3>
+        <p>Generate a wonderfully weird story idea.</p><span class="tag">Get creative ↗</span>
+      </button>
+      <button class="card experiment" data-category="create" onclick="openTool('todo')">
+        <span class="emoji">📝</span><h3>Future Me</h3>
+        <p>Make a little list of things you want to do.</p><span class="tag">Plan something ↗</span>
+      </button>
+      <button class="card experiment" data-category="play" onclick="openTool('coin')">
+        <span class="emoji">🪙</span><h3>Coin of Destiny</h3>
+        <p>Heads or tails? Let the universe decide.</p><span class="tag">Flip it ↗</span>
+      </button>
+      <button class="card experiment" data-category="play" onclick="openTool('clicker')">
+        <span class="emoji">🖱️</span><h3>Button Madness</h3>
+        <p>How many times can you tap in ten seconds?</p><span class="tag">Tap like crazy ↗</span>
+      </button>
+      <button class="card experiment" data-category="create" onclick="openTool('fortune')">
+        <span class="emoji">🔮</span><h3>Fortune Cookie</h3>
+        <p>Receive a mysterious message from the future.</p><span class="tag">Reveal destiny ↗</span>
+      </button>
+    </div>
+    <p class="muted hidden" id="noResults">Nothing found. Try another search!</p>
+  </section>
+
+  <!-- SPACE EXPLORER -->
+  <section class="panel hidden" id="tool-universe">
+    <div class="section-heading"><div><h2>🪐 Little Universe</h2><p>Choose a cosmic destination.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="rowline" id="planetButtons">
+        <button class="planet selected" onclick="planet('Earth',this)">🌍</button>
+        <button class="planet" onclick="planet('Mars',this)">🔴</button>
+        <button class="planet" onclick="planet('Jupiter',this)">🟠</button>
+        <button class="planet" onclick="planet('Saturn',this)">🪐</button>
+        <button class="planet" onclick="planet('Neptune',this)">🔵</button>
+      </div>
+      <div class="result" id="planetInfo"><h3>Earth</h3>Our home planet has liquid water on its surface and supports an extraordinary variety of life.</div>
+      <p class="muted">Tap any planet symbol to explore. The illustrations are playful symbols, not scale models.</p>
+    </div>
+  </section>
+
+  <!-- MONEY GAME -->
+  <section class="panel hidden" id="tool-money">
+    <div class="section-heading"><div><h2>💸 Spend a Fortune</h2><p>All money here is imaginary!</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <p>Your imaginary balance</p>
+      <div class="big-number" id="balance">$1,000,000</div>
+      <div class="meter"><div id="moneyMeter"></div></div>
+      <div class="shop-grid" id="shopGrid"></div>
+      <button class="btn light" onclick="resetMoney()">Start over ↻</button>
+      <div class="result" id="moneyMessage">You have one million pretend dollars. What will you buy?</div>
+    </div>
+  </section>
+
+  <!-- EARTH FACTS -->
+  <section class="panel hidden" id="tool-earth">
+    <div class="section-heading"><div><h2>🌍 Planet Earth</h2><p>A few facts about our amazing planet.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="big-number" id="earthNumber">~71%</div>
+      <h3 id="earthTitle">Ocean-covered surface</h3>
+      <p id="earthText">Roughly 71% of Earth's surface is covered by water.</p>
+      <button class="btn primary" onclick="nextEarthFact()">Next Earth fact →</button>
+      <p class="muted">Figures are approximate and simplified for fun.</p>
+    </div>
+  </section>
+
+  <!-- COLOR MIXER -->
+  <section class="panel hidden" id="tool-colors">
+    <div class="section-heading"><div><h2>🎨 Color Lab</h2><p>Become a color scientist.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="color-box" id="colorPreview"></div>
+      <div class="big-number" id="hexValue">#7357FF</div>
+      <p class="muted">Your color's HEX code</p>
+      <label>Red: <span id="rValue">115</span></label><input type="range" class="field" min="0" max="255" value="115" id="red" oninput="mixColor()">
+      <label>Green: <span id="gValue">87</span></label><input type="range" class="field" min="0" max="255" value="87" id="green" oninput="mixColor()">
+      <label>Blue: <span id="bValue">255</span></label><input type="range" class="field" min="0" max="255" value="255" id="blue" oninput="mixColor()">
+      <button class="btn primary" onclick="copyColor()">Copy color code</button>
+      <button class="btn light" onclick="randomColor()">Surprise me 🎲</button>
+    </div>
+  </section>
+
+  <!-- FACT MACHINE -->
+  <section class="panel hidden" id="tool-facts">
+    <div class="section-heading"><div><h2>🤯 Fact Machine</h2><p>Feed your curiosity.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="emoji">🧠</div>
+      <div class="big-number" style="font-size:35px">Did you know?</div>
+      <div class="result" id="randomFact">Tap below for a surprising fact!</div>
+      <button class="btn primary" onclick="newFact()">Give me another fact!</button>
+    </div>
+  </section>
+
+  <!-- REACTION TEST -->
+  <section class="panel hidden" id="tool-reaction">
+    <div class="section-heading"><div><h2>⚡ Reaction Test</h2><p>How fast are your reflexes?</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="result" id="reactionBox" style="text-align:center;padding:35px 10px;background:#7357ff;color:white">
+        <h2 id="reactionTitle">Ready?</h2><p id="reactionText" style="color:white">Tap start, then wait for the screen to turn green.</p>
+        <button class="btn" style="background:white;color:#222" id="reactionButton" onclick="reactionAction()">Start test</button>
+      </div>
+      <p class="muted" id="reactionResult">Your result will appear here.</p>
+    </div>
+  </section>
+
+  <!-- NUMBER GAME -->
+  <section class="panel hidden" id="tool-guess">
+    <div class="section-heading"><div><h2>🔢 Guess the Number</h2><p>Find the secret number from 1 to 100.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="big-number">? ? ?</div>
+      <p>Make a guess. I'll tell you whether it's too high or too low.</p>
+      <div class="rowline"><input class="field" id="guessInput" type="number" min="1" max="100" placeholder="Your guess (1–100)"><button class="btn primary" onclick="makeGuess()">Guess!</button></div>
+      <div class="result" id="guessResult">You've got unlimited tries. Good luck!</div>
+      <p id="guessCount" class="muted">Guesses: 0</p>
+      <button class="btn light" onclick="resetGuess()">New secret number ↻</button>
+    </div>
+  </section>
+
+  <!-- STORY MACHINE -->
+  <section class="panel hidden" id="tool-story">
+    <div class="section-heading"><div><h2>✍️ Story Machine</h2><p>Ideas for a tiny adventure.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <p>Every story begins with something unexpected.</p>
+      <div class="result" id="storyResult">Your story is waiting to be invented.</div>
+      <button class="btn primary" onclick="makeStory()">Create a story idea ✨</button>
+      <button class="btn light" onclick="copyStory()">Copy idea</button>
+    </div>
+  </section>
+
+  <!-- TO-DO LIST -->
+  <section class="panel hidden" id="tool-todo">
+    <div class="section-heading"><div><h2>📝 Future Me</h2><p>Little steps make big adventures.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool">
+      <div class="rowline"><input class="field" id="taskInput" placeholder="Something you want to do..." maxlength="120"><button class="btn primary" onclick="addTask()">Add +</button></div>
+      <div id="taskList"></div>
+      <button class="btn light" onclick="clearDone()">Remove completed</button>
+      <p class="muted">Your list may be saved in this browser on this device.</p>
+    </div>
+  </section>
+
+  <!-- COIN FLIP -->
+  <section class="panel hidden" id="tool-coin">
+    <div class="section-heading"><div><h2>🪙 Coin of Destiny</h2><p>Make a decision with a flip.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool" style="text-align:center">
+      <div class="big-number" id="coinEmoji" style="font-size:85px">🪙</div>
+      <h2 id="coinResult">The coin is ready.</h2>
+      <button class="btn primary" onclick="flipCoin()">Flip the coin!</button>
+      <p class="muted">It's a random digital coin flip, not a prediction.</p>
+    </div>
+  </section>
+
+  <!-- CLICKER -->
+  <section class="panel hidden" id="tool-clicker">
+    <div class="section-heading"><div><h2>🖱️ Button Madness</h2><p>Tap as much as you can in ten seconds.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool" style="text-align:center">
+      <div class="big-number" id="clickerScore">0</div>
+      <p id="clickerTimer">Ready for ten seconds?</p>
+      <button class="btn primary" style="font-size:22px;padding:22px 35px" id="clickerButton" onclick="clickerTap()">TAP!</button>
+      <p><button class="btn light" onclick="startClicker()">Start / Restart</button></p>
+      <p class="muted">Tap the big button quickly before time runs out.</p>
+    </div>
+  </section>
+
+  <!-- FORTUNE -->
+  <section class="panel hidden" id="tool-fortune">
+    <div class="section-heading"><div><h2>🔮 Fortune Cookie</h2><p>A tiny message for your day.</p></div><button class="pill" onclick="closeTools()">✕ Close</button></div>
+    <div class="card tool" style="text-align:center">
+      <div class="big-number">🥠</div>
+      <div class="result" id="fortuneText">Your fortune is tucked inside.</div>
+      <button class="btn primary" onclick="newFortune()">Open a fortune</button>
+    </div>
+  </section>
+
+  <!-- EXTRA EXPERIMENTS -->
+  <section class="panel" id="play">
+    <div class="section-heading"><div><h2>More tiny joys.</h2><p>Even the smallest things can be fun.</p></div></div>
+    <div class="grid">
+      <div class="card">
+        <span class="emoji">💭</span><h3>Thought of the day</h3>
+        <p id="thought">What if clouds were just the sky's dreams?</p>
+        <button class="btn light" onclick="newThought()">New thought ↻</button>
+      </div>
+      <div class="card">
+        <span class="emoji">🎲</span><h3>Dice roller</h3>
+        <div class="big-number" id="diceNumber">⚄</div>
+        <button class="btn light" onclick="rollDice()">Roll dice</button>
+      </div>
+      <div class="card">
+        <span class="emoji">🧮</span><h3>Quick calculator</h3>
+        <input class="field" id="calcA" type="number" placeholder="First number">
+        <input class="field" id="calcB" type="number" placeholder="Second number">
+        <div class="rowline">
+          <button class="btn light" onclick="calculate('+')">+</button>
+          <button class="btn light" onclick="calculate('-')">−</button>
+          <button class="btn light" onclick="calculate('*')">×</button>
+          <button class="btn light" onclick="calculate('/')">÷</button>
+        </div>
+        <div class="result" id="calcResult">Your answer will appear here.</div>
+      </div>
+      <div class="card">
+        <span class="emoji">🌈</span><h3>Rainbow generator</h3>
+        <div class="color-box" id="rainbowBox"></div>
+        <button class="btn light" onclick="rainbow()">Change rainbow</button>
+      </div>
+      <div class="card">
+        <span class="emoji">🧘</span><h3>One-minute calm</h3>
+        <div class="big-number" id="breathText">Breathe in</div>
+        <p id="breathHelp">Take a slow, comfortable breath.</p>
+        <button class="btn light" onclick="breathe()">Next step</button>
+      </div>
+      <div class="card">
+        <span class="emoji">🎯</span><h3>Pick for me</h3>
+        <p>Can't decide what to do?</p>
+        <div class="result" id="pickResult">Tap for a suggestion.</div>
+        <button class="btn light" onclick="pickForMe()">Surprise me!</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" id="create">
+    <div class="section-heading"><div><h2>Your corner of the internet.</h2><p>A little message from you to the world.</p></div></div>
+    <div class="card tool">
+      <label for="nickname">What should we call you?</label>
+      <input class="field" id="nickname" maxlength="35" placeholder="Your nickname">
+      <label for="message">Leave a message for your future self.</label>
+      <textarea class="field" id="message" maxlength="500" placeholder="Write something kind, funny, or wonderfully weird..."></textarea>
+      <button class="btn primary" onclick="saveNote()">Save my note</button>
+      <button class="btn light" onclick="loadNote()">Load saved note</button>
+      <div class="result" id="noteResult">Your personal corner is ready.</div>
+      <p class="muted">Notes stay in this browser when local storage is available. They are not published online.</p>
+    </div>
+  </section>
+
+  <section class="panel">
+    <div class="card tool" style="text-align:center">
+      <div class="emoji">🚀</div>
+      <h2>You've reached the edge of this little universe.</h2>
+      <p>Except there's always another button to press, another question to ask, and another experiment to build.</p>
+      <button class="btn primary" onclick="surpriseMe()">Choose a random experiment ✨</button>
+      <button class="btn light" onclick="window.scrollTo({top:0,behavior:'smooth'})">Back to the top ↑</button>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo">wonder<span>lab</span> ✳</div>
+  <p>Made for curious minds, enthusiastic clickers, and professional daydreamers.</p>
+  <p>An independent learning project inspired by the spirit of playful web experiments.</p>
+  <p>© WonderLab — made with HTML, CSS, and JavaScript.</p>
+</footer>
+
+<div id="toast" class="hidden" role="status"></div>
+
+<script>
+/* =========================================
+   WONDERLAB: MAIN WEBSITE ENGINE
+========================================= */
+
+let clicks = 0;
+let currentCategory = "all";
+
+const tools = [
+  "universe","money","earth","colors","facts","reaction",
+  "guess","story","todo","coin","clicker","fortune"
+];
+
+document.getElementById("visitCount").textContent =
+  document.querySelectorAll(".experiment").length;
+
+function safeGet(key, fallback) {
+  try {
+    const value = localStorage.getItem(key);
+    return value === null ? fallback : value;
+  } catch (error) {
+    return fallback;
+  }
+}
+function safeSet(key, value) {
+  try {
+    localStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+function countClick() {
+  clicks++;
+  document.getElementById("clickCount").textContent = clicks;
+}
+function toast(message) {
+  const el = document.getElementById("toast");
+  el.textContent = message;
+  el.classList.remove("hidden");
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(() => el.classList.add("hidden"), 2300);
+}
+function toggleDark() {
+  document.body.classList.toggle("dark");
+  const dark = document.body.classList.contains("dark");
+  document.getElementById("themeBtn").textContent =
+    dark ? "☀️ Theme" : "🌙 Theme";
+  safeSet("wonder-dark", dark ? "yes" : "no");
+}
+if (safeGet("wonder-dark", "no") === "yes") {
+  document.body.classList.add("dark");
+  document.getElementById("themeBtn").textContent = "☀️ Theme";
+}
+
+function openTool(name) {
+  closeTools();
+  const section = document.getElementById("tool-" + name);
+  if (!section) return;
+  section.classList.remove("hidden");
+  section.scrollIntoView({ behavior: "smooth", block: "start" });
+  countClick();
+}
+function closeTools() {
+  tools.forEach(name => {
+    const section = document.getElementById("tool-" + name);
+    if (section) section.classList.add("hidden");
+  });
+}
+function setCategory(category, button) {
+  currentCategory = category;
+  document.querySelectorAll(".pill").forEach(el => {
+    if (el.closest("#explore")) el.classList.remove("active");
+  });
+  button.classList.add("active");
+  filterCards();
+}
+function filterCards() {
+  const search = document.getElementById("search").value.toLowerCase().trim();
+  let visible = 0;
+  document.querySelectorAll(".experiment").forEach(card => {
+    const matchesText = card.innerText.toLowerCase().includes(search);
+    const matchesCategory = currentCategory === "all" ||
+      card.dataset.category === currentCategory;
+    const show = matchesText && matchesCategory;
+    card.classList.toggle("hidden", !show);
+    if (show) visible++;
+  });
+  document.getElementById("noResults").classList.toggle("hidden", visible > 0);
+}
+function surpriseMe() {
+  const cards = [...document.querySelectorAll(".experiment")];
+  const available = cards.filter(c => !c.classList.contains("hidden"));
+  const chosen = available[Math.floor(Math.random() * available.length)];
+  if (chosen) chosen.click();
+  else {
+    setCategory("all", document.querySelector("#explore .pill"));
+    const first = document.querySelector(".experiment");
+    if (first) first.click();
+  }
+}
+
+/* =========================================
+   SPACE EXPLORER
+========================================= */
+const planetFacts = {
+  Earth: "Our home planet has liquid water on its surface and supports an extraordinary variety of life.",
+  Mars: "Mars is a cold, rocky world known for its reddish appearance. Scientists have found evidence that water once flowed there.",
+  Jupiter: "Jupiter is the largest planet in our Solar System. Its atmosphere contains a giant storm called the Great Red Spot.",
+  Saturn: "Saturn is famous for its beautiful rings, which are made mostly of countless pieces of ice and rocky material.",
+  Neptune: "Neptune is a distant, blue ice giant. Winds in its atmosphere can reach extremely high speeds."
+};
+function planet(name, button) {
+  document.querySelectorAll(".planet").forEach(el => el.classList.remove("selected"));
+  button.classList.add("selected");
+  document.getElementById("planetInfo").innerHTML =
+    "<h3>" + name + "</h3>" + planetFacts[name];
+  countClick();
+}
+
+/* =========================================
+   PRETEND MONEY SHOPPING
+========================================= */
+const startingMoney = 1000000;
+let balance = startingMoney;
+const purchases = [
+  { icon:"🍕", name:"A giant pizza", price:25 },
+  { icon:"🎮", name:"A gaming setup", price:2500 },
+  { icon:"🚲", name:"A cool bicycle", price:600 },
+  { icon:"🏝️", name:"A private island", price:500000 },
+  { icon:"🚀", name:"A pretend spaceship", price:150000 },
+  { icon:"🏰", name:"A fantasy castle", price:300000 },
+  { icon:"🍦", name:"One million ice creams", price:200000 },
+  { icon:"🤖", name:"A friendly robot", price:50000 }
+];
+function formatMoney(n) {
+  return "$" + n.toLocaleString("en-US");
+}
+function renderShop() {
+  document.getElementById("balance").textContent = formatMoney(balance);
+  document.getElementById("moneyMeter").style.width =
+    Math.max(0, Math.min(100, balance / startingMoney * 100)) + "%";
+  document.getElementById("shopGrid").innerHTML = purchases.map((item, i) =>
+    `<button class="shop-item" onclick="buyItem(${i})">
+      <span style="font-size:27px">${item.icon}</span>
+      <strong>${item.name}</strong>
+      <small>${formatMoney(item.price)}</small>
+    </button>`
+  ).join("");
+}
+function buyItem(i) {
+  const item = purchases[i];
+  if (balance < item.price) {
+    document.getElementById("moneyMessage").textContent =
+      "Oops! You don't have enough pretend money for " + item.name + ".";
+    return;
+  }
+  balance -= item.price;
+  renderShop();
+  document.getElementById("moneyMessage").textContent =
+    "You bought " + item.name + "! You have " + formatMoney(balance) + " left.";
+  countClick();
+}
+function resetMoney() {
+  balance = startingMoney;
+  renderShop();
+  document.getElementById("moneyMessage").textContent =
+    "Fresh fortune! You have one million pretend dollars.";
+}
+renderShop();
+
+/* =========================================
+   EARTH FACT EXPLORER
+========================================= */
+const earthFacts = [
+  ["~71%", "Ocean-covered surface", "Roughly 71% of Earth's surface is covered by water."],
+  ["24 hours", "A day, approximately", "Earth rotates once in about 24 hours. The exact length depends on how a day is measured."],
+  ["365.25 days", "A trip around the Sun", "Earth takes about 365.25 days to orbit the Sun. Leap years help keep our calendar aligned."],
+  ["1 Moon", "Our natural satellite", "Earth has one permanent natural moon, which affects ocean tides."],
+  ["7 continents", "A common model", "Many school geography systems teach seven continents, although continent groupings can vary."],
+  ["~150 million km", "Average distance to the Sun", "Earth's average distance from the Sun is about 150 million kilometres."]
+];
+let earthIndex = 0;
+function nextEarthFact() {
+  earthIndex = (earthIndex + 1) % earthFacts.length;
+  const f = earthFacts[earthIndex];
+  document.getElementById("earthNumber").textContent = f[0];
+  document.getElementById("earthTitle").textContent = f[1];
+  document.getElementById("earthText").textContent = f[2];
+  countClick();
+}
+
+/* =========================================
+   COLOR MIXER
+========================================= */
+function hex(n) {
+  return Number(n).toString(16).padStart(2, "0").toUpperCase();
+}
+function mixColor() {
+  const r = +document.getElementById("red").value;
+  const g = +document.getElementById("green").value;
+  const b = +document.getElementById("blue").value;
+  const color = "#" + hex(r) + hex(g) + hex(b);
+  document.getElementById("rValue").textContent = r;
+  document.getElementById("gValue").textContent = g;
+  document.getElementById("bValue").textContent = b;
+  document.getElementById("hexValue").textContent = color;
+  document.getElementById("colorPreview").style.background = color;
+}
+function randomColor() {
+  ["red","green","blue"].forEach(id => {
+    document.getElementById(id).value = Math.floor(Math.random() * 256);
+  });
+  mixColor();
+  countClick();
+}
+async function copyColor() {
+  const color = document.getElementById("hexValue").textContent;
+  try {
+    await navigator.clipboard.writeText(color);
+    toast(color + " copied!");
+  } catch (error) {
+    toast("Your color is " + color + " — copy it manually.");
+  }
+}
+mixColor();
+
+/* =========================================
+   RANDOM FACT MACHINE
+========================================= */
+const facts = [
+  "Octopuses have three hearts.",
+  "A group of flamingos is often called a flamboyance.",
+  "Honey can remain edible for a very long time when properly sealed and stored.",
+  "The fingerprints of koalas can look surprisingly similar to human fingerprints.",
+  "Lightning can heat the air around it to temperatures hotter than the surface of the Sun.",
+  "A day on Venus is longer than its year when measured using its rotation and orbit periods.",
+  "Wombats produce cube-shaped droppings.",
+  "Sharks existed before trees appeared on Earth.",
+  "The Eiffel Tower can change height slightly as its metal expands and contracts with temperature.",
+  "Some bamboo species can grow extremely quickly under suitable conditions.",
+  "A typical cumulus cloud can contain a surprisingly large amount of water spread across a huge volume.",
+  "There are more possible arrangements of a standard deck of cards than there are seconds in many millions of years."
+];
+let lastFact = -1;
+function newFact() {
+  let i;
+  do { i = Math.floor(Math.random() * facts.length); }
+  while (i === lastFact && facts.length > 1);
+  lastFact = i;
+  document.getElementById("randomFact").textContent = facts[i];
+  countClick();
+}
+
+/* =========================================
+   REACTION TIME TEST
+========================================= */
+let reactionState = "idle";
+let reactionTimer = null;
+let reactionStart = 0;
+function reactionAction() {
+  const box = document.getElementById("reactionBox");
+  const title = document.getElementById("reactionTitle");
+  const txt = document.getElementById("reactionText");
+  const btn = document.getElementById("reactionButton");
+  if (reactionState === "waiting") {
+    clearTimeout(reactionTimer);
+    reactionState = "early";
+    box.style.background = "#e54b66";
+    title.textContent = "Too early!";
+    txt.textContent = "Wait for green next time.";
+    btn.textContent = "Try again";
+    return;
+  }
+  if (reactionState === "ready") {
+    const ms = Math.round(performance.now() - reactionStart);
+    reactionState = "done";
+    box.style.background = "#7357ff";
+    title.textContent = ms + " ms";
+    txt.textContent = ms < 250 ? "Super quick!" : ms < 400 ? "Nice reflexes!" : "Keep practicing!";
+    btn.textContent = "Try again";
+    document.getElementById("reactionResult").textContent =
+      "Your reaction time: " + ms + " milliseconds.";
+    countClick();
+    return;
+  }
+  reactionState = "waiting";
+  box.style.background = "#e5a33d";
+  title.textContent = "Wait for green...";
+  txt.textContent = "Don't tap yet!";
+  btn.textContent = "Wait...";
+  document.getElementById("reactionResult").textContent = "Get ready...";
+  reactionTimer = setTimeout(() => {
+    if (reactionState !== "waiting") return;
+    reactionState = "ready";
+    reactionStart = performance.now();
+    box.style.background = "#25a66a";
+    title.textContent = "TAP NOW!";
+    txt.textContent = "As quickly as you can!";
+    btn.textContent = "TAP!";
+  }, 1500 + Math.random() * 3500);
+}
+
+/* =========================================
+   GUESS THE NUMBER
+========================================= */
+let secretNumber = Math.floor(Math.random() * 100) + 1;
+let guesses = 0;
+function makeGuess() {
+  const input = document.getElementById("guessInput");
+  const n = Number(input.value);
+  if (!input.value || !Number.isInteger(n) || n < 1 || n > 100) {
+    document.getElementById("guessResult").textContent =
+      "Enter a whole number from 1 to 100.";
+    return;
+  }
+  guesses++;
+  const result = document.getElementById("guessResult");
+  if (n === secretNumber) {
+    result.textContent = "🎉 Correct! The secret number was " + secretNumber +
+      ". You found it in " + guesses + " guesses!";
+  } else if (n < secretNumber) {
+    result.textContent = "Too low! Try a bigger number.";
+  } else {
+    result.textContent = "Too high! Try a smaller number.";
+  }
+  document.getElementById("guessCount").textContent = "Guesses: " + guesses;
+  input.value = "";
+  countClick();
+}
+function resetGuess() {
+  secretNumber = Math.floor(Math.random() * 100) + 1;
+  guesses = 0;
+  document.getElementById("guessResult").textContent = "New secret number created. Guess away!";
+  document.getElementById("guessCount").textContent = "Guesses: 0";
+  document.getElementById("guessInput").value = "";
+}
+
+/* =========================================
+   STORY MACHINE
+========================================= */
+const storyWho = ["a sleepy dragon","a robot who loves flowers","a kid with a magic backpack","a talking moon","a penguin detective","an invisible superhero","a tiny alien chef"];
+const storyWhere = ["on a floating island","inside a giant library","at the edge of the universe","in a city made of candy","under the ocean","in a school for wizards","on a train to nowhere"];
+const storyWhat = ["discovers a mysterious key","accidentally changes the weather","finds a door in the sky","must solve a very silly mystery","receives a letter from the future","starts a dance competition","finds a map drawn by a cat"];
+function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+let latestStory = "";
+function makeStory() {
+  latestStory = "One day, " + pick(storyWho) + " " + pick(storyWhere) +
+    " and " + pick(storyWhat) + ". What happens next? Only you can decide!";
+  document.getElementById("storyResult").textContent = latestStory;
+  countClick();
+}
+async function copyStory() {
+  if (!latestStory) { toast("Create a story first!"); return; }
+  try {
+    await navigator.clipboard.writeText(latestStory);
+    toast("Story idea copied!");
+  } catch (error) {
+    toast("Select and copy your story idea.");
+  }
+}
+
+/* =========================================
+   TO-DO LIST
+========================================= */
+let tasks = [];
+try {
+  const parsedTasks = JSON.parse(safeGet("wonder-tasks", "[]"));
+  if (Array.isArray(parsedTasks)) tasks = parsedTasks;
+} catch (error) { tasks = []; }
+
+function saveTasks() {
+  safeSet("wonder-tasks", JSON.stringify(tasks));
+}
+function renderTasks() {
+  const list = document.getElementById("taskList");
+  list.innerHTML = "";
+  tasks.forEach((task, index) => {
+    const row = document.createElement("div");
+    row.className = "task" + (task.done ? " done" : "");
+    const check = document.createElement("input");
+    check.type = "checkbox";
+    check.checked = !!task.done;
+    check.setAttribute("aria-label", "Mark task complete");
+    check.addEventListener("change", () => {
+      tasks[index].done = check.checked;
+      saveTasks();
+      renderTasks();
+    });
+    const label = document.createElement("span");
+    label.textContent = task.text;
+    const remove = document.createElement("button");
+    remove.textContent = "✕";
+    remove.setAttribute("aria-label", "Delete task");
+    remove.addEventListener("click", () => {
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
+    });
+    row.append(check, label, remove);
+    list.appendChild(row);
+  });
+}
+function addTask() {
+  const input = document.getElementById("taskInput");
+  const text = input.value.trim();
+  if (!text) { toast("Write a task first!"); return; }
+  tasks.push({ text, done: false });
+  input.value = "";
+  saveTasks();
+  renderTasks();
+  countClick();
+}
+function clearDone() {
+  tasks = tasks.filter(task => !task.done);
+  saveTasks();
+  renderTasks();
+}
+document.getElementById("taskInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") addTask();
+});
+renderTasks();
+
+/* =========================================
+   COIN OF DESTINY
+========================================= */
+function flipCoin() {
+  const heads = Math.random() < .5;
+  document.getElementById("coinEmoji").textContent = heads ? "👑" : "🦅";
+  document.getElementById("coinResult").textContent = heads ? "HEADS!" : "TAILS!";
+  countClick();
+}
+
+/* =========================================
+   TEN-SECOND CLICKER
+========================================= */
+let clickerActive = false;
+let clickerScore = 0;
+let clickerEnd = 0;
+let clickerInterval = null;
+function startClicker() {
+  clearInterval(clickerInterval);
+  clickerScore = 0;
+  clickerActive = true;
+  clickerEnd = Date.now() + 10000;
+  document.getElementById("clickerScore").textContent = "0";
+  document.getElementById("clickerTimer").textContent = "10 seconds left!";
+  document.getElementById("clickerButton").textContent = "TAP!";
+  clickerInterval = setInterval(() => {
+    const left = Math.max(0, (clickerEnd - Date.now()) / 1000);
+    document.getElementById("clickerTimer").textContent =
+      left.toFixed(1) + " seconds left!";
+    if (left <= 0) {
+      clearInterval(clickerInterval);
+      clickerActive = false;
+      document.getElementById("clickerTimer").textContent =
+        "Time's up! Your score: " + clickerScore;
+      document.getElementById("clickerButton").textContent = "Start again";
+    }
+  }, 100);
+}
+function clickerTap() {
+  if (!clickerActive) { startClicker(); return; }
+  clickerScore++;
+  document.getElementById("clickerScore").textContent = clickerScore;
+}
+
+/* =========================================
+   FORTUNE COOKIE
+========================================= */
+const fortunes = [
+  "A small idea today might become a big adventure tomorrow.",
+  "Your next great discovery may begin with a question.",
+  "You are allowed to be a beginner at something wonderful.",
+  "A little kindness can travel further than you imagine.",
+  "The best time to learn something new is when you're curious.",
+  "Your future self will thank you for one small step today.",
+  "Sometimes the most interesting path is the one you didn't plan.",
+  "Keep asking why. The world has fascinating answers."
+];
+function newFortune() {
+  document.getElementById("fortuneText").textContent = pick(fortunes);
+  countClick();
+}
+
+/* =========================================
+   MORE LITTLE EXPERIMENTS
+========================================= */
+const thoughts = [
+  "What if clouds were just the sky's dreams?",
+  "Somewhere, a future version of you is cheering you on.",
+  "Every expert was once a beginner with a question.",
+  "The universe is old, but your ideas can still be new.",
+  "A tiny experiment can lead to a huge discovery.",
+  "What would your pet say if it could review your day?",
+  "Maybe boredom is your imagination asking for a new job."
+];
+function newThought() {
+  document.getElementById("thought").textContent = pick(thoughts);
+}
+function rollDice() {
+  const n = Math.floor(Math.random() * 6) + 1;
+  document.getElementById("diceNumber").textContent =
+    ["⚀","⚁","⚂","⚃","⚄","⚅"][n-1];
+  countClick();
+}
+function calculate(op) {
+  const a = Number(document.getElementById("calcA").value);
+  const b = Number(document.getElementById("calcB").value);
+  if (document.getElementById("calcA").value === "" ||
+      document.getElementById("calcB").value === "") {
+    document.getElementById("calcResult").textContent = "Enter both numbers first.";
+    return;
+  }
+  if (op === "/" && b === 0) {
+    document.getElementById("calcResult").textContent = "You cannot divide by zero.";
+    return;
+  }
+  let answer;
+  if (op === "+") answer = a + b;
+  if (op === "-") answer = a - b;
+  if (op === "*") answer = a * b;
+  if (op === "/") answer = a / b;
+  document.getElementById("calcResult").textContent = "Answer: " + answer;
+}
+function rainbow() {
+  const hue = Math.floor(Math.random() * 360);
+  document.getElementById("rainbowBox").style.background =
+    `linear-gradient(135deg,hsl(${hue},90%,65%),hsl(${(hue+120)%360},90%,65%),hsl(${(hue+240)%360},90%,65%))`;
+  countClick();
+}
+let breathStep = 0;
+function breathe() {
+  breathStep++;
+  const steps = [
+    ["Breathe in","Gently breathe in, without forcing it."],
+    ["Breathe out","Slowly breathe out and relax your shoulders."],
+    ["Pause","Rest for a moment. Continue whenever comfortable."]
+  ];
+  const step = steps[breathStep % steps.length];
+  document.getElementById("breathText").textContent = step[0];
+  document.getElementById("breathHelp").textContent = step[1];
+}
+const suggestions = [
+  "Learn one new fact about space.",
+  "Draw an imaginary animal.",
+  "Build a tiny website feature.",
+  "Ask someone an interesting question.",
+  "Invent a silly game.",
+  "Write a three-sentence story.",
+  "Go outside and notice something new.",
+  "Make a color you've never used before."
+];
+function pickForMe() {
+  document.getElementById("pickResult").textContent = pick(suggestions);
+}
+
+/* =========================================
+   PERSONAL NOTE
+========================================= */
+function saveNote() {
+  const nickname = document.getElementById("nickname").value.trim();
+  const message = document.getElementById("message").value.trim();
+  const data = { nickname, message };
+  const saved = safeSet("wonder-note", JSON.stringify(data));
+  document.getElementById("noteResult").textContent =
+    (nickname ? "Hey, " + nickname + "! " : "") +
+    (saved ? "Your note has been saved on this device." :
+      "Your note is here for now, but this browser could not save it.");
+  countClick();
+}
+function loadNote() {
+  try {
+    const data = JSON.parse(safeGet("wonder-note", "{}"));
+    document.getElementById("nickname").value = data.nickname || "";
+    document.getElementById("message").value = data.message || "";
+    document.getElementById("noteResult").textContent =
+      data.message || data.nickname ? "Your saved note has been loaded." :
+      "No saved note found yet.";
+  } catch (error) {
+    document.getElementById("noteResult").textContent =
+      "Couldn't read a saved note in this browser.";
+  }
+}
+
+/* Enter key shortcuts for simple games */
+document.getElementById("guessInput").addEventListener("keydown", event => {
+  if (event.key === "Enter") makeGuess();
+});
+</script>
+</body>
+</html>
